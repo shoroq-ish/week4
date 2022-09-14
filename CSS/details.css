@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+:root {
+  --primary-color: #fafafa;
+  --secondary-color: white;
+  --text-color: black;
+}
+
+.dark-mode {
+  --primary-color: #202c37;
+  --secondary-color: #2b3945;
+  --text-color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: Nunito Sans;
+  src: url(Nunito_Sans/NunitoSans-Regular.ttf);
+}
+@font-face {
+  font-family: Nunito Sans bold;
+  src: url(Nunito_Sans/NunitoSans-Bold.ttf);
+}
+@font-face {
+  font-family: Nunito Sans extra bold;
+  src: url(Nunito_Sans/NunitoSans-ExtraBold.ttf);
+}
+header {
+  background-color: var(--secondary-color);
+  padding-bottom: 0.75rem;
+  z-index: 10;
+}
+
+.container-custom {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.elem1 {
+  font-family: Nunito Sans bold;
+  font-size: 1.1rem;
+}
+
+.elem2 {
+  font-family: Nunito Sans;
+  font-size: 0.9rem;
+}
+
+main {
+  padding-top: 45px;
+}
+
+img {
+  height: 320px;
+}
+
+.country {
+  font-family: Nunito Sans extra bold;
+  font-size: x-large;
+  font-weight: 900;
+}
+
+.property {
+  font-family: Nunito Sans;
+  font-weight: 600;
+}
+
+.div1 {
+  gap: 170px;
+}
+
+.btn {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+button {
+  text-align: center;
+  width: 110px;
+  font-family: Nunito Sans;
+}
+
+.div3 {
+  margin-top: 60px;
+}
+
+.inner-div {
+  padding-top: 10%;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*=main-div] {
+    flex-direction: column;
+    row-gap: 30px;
+  }
+  [class*=div1] {
+    flex-direction: column;
+    row-gap: 30px;
+  }
+  img {
+    width: 70%;
+  }
+  [class*=div3] {
+    margin-top: 35px;
+  }
+  [class*=buttons] {
+    margin-left: 0px;
+  }
+}
+@media only screen and (min-width: 1580px) {
+  [class*=container-custom] {
+    margin-left: 170px;
+    margin-right: 170px;
+  }
+}/*# sourceMappingURL=details.css.map */

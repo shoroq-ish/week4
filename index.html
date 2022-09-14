@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+        integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="CSS/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+
+<body>
+    <header class="m-0 pt-2 shadow-sm position-fixed w-100 ">
+
+        <div class="d-flex justify-content-between container ">
+            <div class="elem1">Where in the world?</div>
+            <div class="elem2 pt-1" onclick="darkTheme()" id="darkMode"><i class="fa-regular fa-moon"></i>Dark Mode
+            </div>
+
+        </div>
+    </header>
+    <main class="pb-5 container">
+        <div class="d-flex justify-content-between  div2">
+            <div class=" position-relative Search shadow-sm rounded">
+                <i class="fa-solid fa-magnifying-glass position-absolute ps-4"></i>
+                <input placeholder="Search for a country..." class=" w-100 h-100 border-0 rounded" id="search">
+            </div>
+            <div class="drop dropdown ">
+                <button class=" small shadow-sm  rounded pe-3  ps-3  pt-3 pb-3  border-0 dropdown-toggle " type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <div id="dropdownMenuButton1">Filter by</div>
+                    <i class="fa-solid fa-angle-down ps-5"></i>
+                </button>
+                <ul id="regions" class=" shadow-sm dropdown-menu w-100 border-0 dropdown-list"
+                    aria-labelledby="dropdownMenuButton1">
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="row flex-nowrap gy-5 gx-5 mt-5 px-sm-5 px-md-0 ">
+            <div id="drop" ondrop="drop(event)" ondragover="allowDrop(event)"
+                class="d-sm-none d-md-block d-none d-sm-block sticky-top mt-4 h-100 col-md-5 col-lg-3  ps-3 ms-4 shadow-sm  rounded">
+                <h4 class="fw-bold pt-2 mb-4  ">Favourites</h4>
+
+
+            </div>
+            <div class="col ps-4 mt-0 scrollit ">
+                <div class=" row  gy-5 gx-5  " id="cards">
+
+                </div>
+            </div>
+        </div>
+        <script>
+
+
+            let searchData = init("all");
+            favourites();
+
+            async function init(name) {
+                let countries = await getData(name);
+                if (countries.status == "404") {
+                    showNotFoundData();
+                } else {
+                    let viewData = prepareData(countries);
+                    showData(viewData);
+                }
+
+
+                return countries;
+            }
+
+            async function favourites() {
+                let arrayOfElem = [];
+                let fav = JSON.parse(localStorage.getItem("fav"));
+                if (fav) {
+                    for (let f of fav) {
+                        let dropElement = await new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve(createDropedElem(f));
+                            });
+                        });
+                        arrayOfElem.push(dropElement);
+                    }
+                    let dropSpace = document.getElementById("drop");
+                    for (let ele of arrayOfElem) {
+                        dropSpace.appendChild(ele);
+                    }
+                }
+
+            }
+
+            function showNotFoundData() {
+                document.getElementById("cards").innerHTML = "Not Found";
+            }
+
+            function showData(viewData) {
+                document.getElementById("cards").innerHTML = viewData;
+            }
+
+            function search() {
+                let search = document.getElementById("search");
+                return search;
+            }
+
+            search().addEventListener("input", (e) => {
+                let filterCountry = [];
+                searchvalue = e.target.value;
+
+                name = "name/" + searchvalue;
+                if (searchvalue == "") {
+                    name = "all";
+                }
+                searchData = init(name);
+                let filterText = getFilterData();
+                if (filterText != "") {
+                    searchForCountries();
+                }
+            });
+
+            function getFilterData() {
+                let filterText = document.getElementById("dropdownMenuButton1").innerHTML;
+                if (filterText == "Filter by" || filterText == "all") {
+                    filterText = "";
+                }
+                return filterText;
+            }
+            async function searchForCountries() {
+                let searchvalue = search().value;
+                let allD = [];
+                let filterText = getFilterData();
+                allD = await new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(searchData);
+                    });
+                });
+                if (filterText == "Favourite") {
+                    let filterCountry = "";
+                    let filter = [];
+                    let i = 0;
+                    let storageFav = JSON.parse(localStorage.getItem("fav"));
+                    for (let f of storageFav) {
+                        filterCountry = allD.filter((country) => {
+                            return country.name.common.includes(f);
+                        });
+                        if (filterCountry.length) {
+                            filter[i++] = filterCountry[0];
+                        }
+
+                    }
+                    let viewData = prepareData(filter);
+                    showData(viewData);
+                }
+                else {
+                    filterCountry = allD.filter((country) => {
+                        return country.region.includes(filterText);
+                    });
+                    let viewData = prepareData(filterCountry);
+                    showData(viewData);
+                }
+            }
+
+            function getData(name) {
+                return fetch('https://restcountries.com/v3.1/' + name)
+                    .then((response) => response.json());
+            }
+
+            function prepareData(data) {
+                return htmlString = data
+                    .map((country) => {
+
+                        let countryName = country.name.common;
+                        return `<div id="` + country.name.common + `main"  draggable="true" ondragstart="drag('` + countryName + `',this)" class="  col-12 col-md-5 col-lg-4">
+                                    <a href="details.html?name=`+ country.name.common + `" class="w-100" >
+                                    <div class="shadow-sm  p-0 rounded card ">
+
+                                          <img   src="` + country.flags.svg + `" alt="flag1" class="image w-100 rounded-top ">
+                                         <div class=" mt-4 ms-4 mb-5 card-text">
+                                            <div class="country mb-3">` + country.name.common + `</div>
+                                           <div>
+                                              <div class="row-detail"><span class="property">Population:</span>
+                                                     <span class="ps-1 value">` + country.population + `</span></div>
+                                            <div class="row-detail"><span class="property">Region:</span>
+                                                  <span class="ps-1 value">` + country.region + `</span></div>
+                                          <div class="row-detail"><span class="property">Capital:</span>
+                                                <span class="ps-1 value">` + country.capital + `</span></div>
+                                                
+                                    </div></div></a><i id="` + country.name.common + `s" onclick="star(this)" class="d-xl-none d-md-none d-lg-block d-lg-none d-xl-block fa-solid fa-star me-3 pb-3 d-flex flex-row-reverse "></i></div></div>`;
+                    }).join('');
+
+            }
+
+            let favouriteCountry = "";
+
+            function star(starObj) {
+
+                let name = starObj.id;
+                let originName = name.slice(0, -1);
+                let id = document.getElementById(name);
+                if (id.style.color === "gold") {
+                    id.style.color = "lightgray";
+                    removeFromLocalstorage(originName);
+                    let toRemove = document.getElementById(originName + "e");
+                    toRemove.remove();
+
+                } else {
+                    id.style.color = "gold";
+                    favouriteCountry = originName;
+                    addToLoacalstorage();
+                }
+            }
+            function drag(name, thisObj) {
+
+                favouriteCountry = name;
+                document.getElementById("drop").style.borderWidth = "3px";
+                document.getElementById("drop").style.borderStyle = "ridge";
+                document.getElementById("drop").style.borderColor = "#27ae60";
+                document.getElementById(thisObj.id).style.opacity = "0.5";
+            }
+
+            async function drop(ev) {
+                document.getElementById("drop").style.borderWidth = "0px";
+
+
+                if (addToLoacalstorage()) {
+                    ev.preventDefault();
+
+                    var data = ev.dataTransfer.getData("text");
+                    let dropElement = await new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(createDropedElem(favouriteCountry));
+                        });
+                    });
+                    document.getElementById(favouriteCountry + "main").style.opacity = "1";
+                    ev.target.appendChild(dropElement);
+                }
+            }
+
+            function addToLoacalstorage() {
+                let doubleFlag = 0;
+                let storageFav = JSON.parse(localStorage.getItem("fav"));
+                let i = 0;
+                if (storageFav) {
+                    i = storageFav.length;
+                    for (let n of storageFav) {
+                        if (n == favouriteCountry) {
+                            doubleFlag = 1;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    storageFav = [];
+                }
+
+                if (favouriteCountry && !doubleFlag) {
+                    storageFav[i++] = favouriteCountry;
+                    localStorage.setItem("fav", JSON.stringify(storageFav));
+                    let f1 = JSON.parse(localStorage.getItem("fav"));
+
+                    return true;
+                }
+                return false;
+
+            }
+
+            async function createDropedElem(favourite) {
+                let allD = await new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(searchData);
+                    });
+                });
+                let filterCountry = allD.filter((country) => {
+                    return country.name.common.includes(favourite);
+                });
+                let flag = filterCountry[0].flags.svg;
+                var dropElement = document.createElement('div');
+                dropElement.innerHTML = `
+                <div id="`+ favourite + `e" class=" my-2 d-flex justify-content-between">
+                    <div><img  src="` + flag + `" alt="flag1" class=" favImage w-25 me-3  rounded">
+                    <div class="d-inline-block">`+ favourite + `</div></div>
+                    <i id="`+ favourite + `" onclick="deleteItem(this)" class="fa-regular fa-circle-xmark "></i>
+                    </div>
+                `;
+                document.getElementById(favourite + "s").style.color = "gold";
+
+                return dropElement;
+            }
+
+            function deleteItem(itemObj) {
+                itemObj.parentNode.parentNode.removeChild(itemObj.parentNode);
+                removeFromLocalstorage(itemObj.id);
+            }
+
+            function removeFromLocalstorage(id) {
+                let storageFav = JSON.parse(localStorage.getItem("fav"));
+                for (var i = 0; i < storageFav.length; i++) {
+                    if (storageFav[i] === id) {
+                        storageFav.splice(i, 1);
+                    }
+                }
+                localStorage.setItem("fav", JSON.stringify(storageFav));
+
+            }
+
+            function allowDrop(ev) {
+                ev.preventDefault();
+            }
+
+
+
+            async function filterByRegion(region) {
+                let filterCountry = [];
+                filtertext = region.textContent;
+                document.getElementById("dropdownMenuButton1").innerHTML = filtertext;
+                searchForCountries();
+            }
+
+
+            let regions = ["Africa", "America", "Asia", "Europe", "Oceania", "Favourite", "all"];
+            for (let region of regions) {
+                document.getElementById("regions").innerHTML +=
+                    '<li class="dropdown-item small" ><a href="#" onclick="filterByRegion(this)">' + region + '</a></li>';
+            }
+
+            let dark_light = localStorage.getItem("dark-theme");
+            if (dark_light == "dark") {
+                document.body.classList.toggle("dark-mode");
+            }
+            else if (dark_light == "light") {
+                document.body.classList.toggle("root");
+            }
+
+            function darkTheme() {
+                let dark = document.body.classList.toggle("dark-mode");
+                if (dark) {
+                    localStorage.setItem("dark-theme", "dark");
+                }
+                else {
+                    localStorage.setItem("dark-theme", "light");
+
+                }
+
+            }
+
+
+        </script>
+
+
+
+    </main>
+
+</body>
+
+</html>

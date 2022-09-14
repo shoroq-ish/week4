@@ -1,0 +1,201 @@
+body {
+  font: Nunito Sans;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #fafafa;
+  --secondary-color: white;
+  --text-color: black;
+}
+
+.dark-mode {
+  --primary-color: #202c37;
+  --secondary-color: #2b3945;
+  --text-color: white;
+}
+
+#drop {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.card {
+  background-color: var(--secondary-color);
+}
+
+.card-text {
+  color: var(--text-color);
+}
+
+.drop {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.dropdown-list {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+@font-face {
+  font-family: Nunito Sans;
+  src: url(Nunito_Sans/NunitoSans-Regular.ttf);
+}
+@font-face {
+  font-family: Nunito Sans bold;
+  src: url(Nunito_Sans/NunitoSans-Bold.ttf);
+}
+@font-face {
+  font-family: Nunito Sans extra bold;
+  src: url(Nunito_Sans/NunitoSans-ExtraBold.ttf);
+}
+header {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  padding-bottom: 0.75rem;
+  z-index: 10;
+}
+
+.container-custom {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.elem1 {
+  font-family: Nunito Sans bold;
+  font-size: 1.1rem;
+}
+
+.elem2 {
+  font-family: Nunito Sans;
+  font-size: 0.9rem;
+}
+
+#dropdownMenuButton1 {
+  display: inline-block;
+}
+
+main {
+  padding-top: 80px;
+}
+
+.Search {
+  color: var(--text-color);
+  font-family: Nunito Sans;
+  height: 53px;
+  width: 35%;
+}
+
+input {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  padding-left: 60px;
+}
+
+.fa-magnifying-glass {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+button {
+  font-family: Nunito Sans;
+  box-sizing: border-box;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+li {
+  font-family: Nunito Sans;
+}
+
+.country {
+  font-family: Nunito Sans extra bold;
+  font-size: large;
+  font-weight: 900;
+}
+
+.property {
+  font-family: Nunito Sans;
+  font-weight: 600;
+}
+
+.fa-star {
+  color: lightgray;
+  float: right;
+  font-size: large;
+}
+
+#drop {
+  min-height: 500px;
+  overflow: scroll;
+}
+
+.sticky-top {
+  top: 70px;
+}
+
+.image {
+  height: 150px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*=div2] {
+    flex-direction: column;
+    row-gap: 30px;
+  }
+  [class*=drop] {
+    margin-right: auto;
+  }
+}
+@media only screen and (max-width: 768px) {
+  /* ask about this line*/
+  /* For mobile phones: */
+  #fa-star {
+    display: none;
+  }
+  [class*=Search] {
+    width: 80%;
+    display: block;
+  }
+}
+@media only screen and (min-width: 1580px) {
+  image {
+    height: 200px;
+  }
+}
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  text-decoration: none;
+  color: black;
+}
+
+a:active {
+  text-decoration: none;
+  color: black;
+}
+
+a {
+  display: inline-block;
+}/*# sourceMappingURL=index.css.map */
